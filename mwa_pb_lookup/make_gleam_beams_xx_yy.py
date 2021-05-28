@@ -11,9 +11,9 @@ import json
 import numpy as np
 from optparse import OptionParser
 from h5py import File
-from primary_beam import MWA_Tile_full_EE
+from mwa_pb.primary_beam import MWA_Tile_full_EE
 
-OUT_FILE_DEFAULT="gleam_xx_yy.hdf5"
+OUT_FILE_DEFAULT="gleam_xx_yy_HI.hdf5"
 
 logging.basicConfig(format='%(asctime)s-%(levelname)s %(message)s', level=logging.DEBUG)
 
@@ -29,10 +29,12 @@ POWER = True
 JONES = False
 INTERP = False
 AREA_NORM = False
-CHANS = ( 165,  166, #for HI 21cm data
-          171,  172,
-          177,  178,
-          183,  184)
+CHANS = ( 164, 165,  #for HI 21cm data
+          170, 171,
+          176, 177,
+          182, 183,
+          184, 188)
+
 #CHANS = ( 56,  57, # bottom edge of GLEAM 69
 #          62,  63,
 #          68,  69,
@@ -63,13 +65,13 @@ CHANS = ( 165,  166, #for HI 21cm data
 
 CHAN_FREQS = [c*1280000. for c in CHANS]
 FREQS = []
-for c in range(len(CHANS)/2):
+for c in range(int(len(CHANS)/2)):
     FREQS.append(640000*(CHANS[2*c]+CHANS[2*c+1]))
 
 N_POL = 2
 SWEETSPOTS = list(range(197))
 
-sweet_dict = json.load(open("sweetspots.json"))
+sweet_dict = json.load(open("../sweetspots.json"))
 delays = {int(k): v for k, v in sweet_dict['delays'].items()}
 assert sorted(delays.keys()) == SWEETSPOTS
 # Generate grid of all Az and El coordinates
